@@ -5,7 +5,7 @@ import pickle
 
 Encodings=[]
 Names=[]
-databasename=["Leslie", "Shannon Koh"]
+databasename=[]
 with open('train.pkl', 'rb') as f:
     Names=pickle.load(f)
     Encodings=pickle.load(f)
