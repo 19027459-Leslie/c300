@@ -27,7 +27,8 @@ staff = mycursor.fetchall()
 
 mycursor.execute("select fullname from guest")
 guest= mycursor.fetchall()
-
+for i in guest:
+    print(i)
 Encodings=[]
 Names=[]
 databasename=[]
@@ -55,7 +56,8 @@ while True:
             name=Names[first_match_index]
             if(name in staff or guest) and (name not in detected):
                 detected.append(name)
-                strin="Hello "+name+" please proceed to level 1"
+                strin="Hello "+name+", please proceed to level 1"
+                print(strin)
                 engine.say(strin)                
                 engine.runAndWait()
                 engine.stop()
