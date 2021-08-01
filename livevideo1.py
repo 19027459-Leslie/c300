@@ -2,10 +2,36 @@ import face_recognition
 import cv2
 import os
 import pickle
+import mysql.connector
+import pyttsx3
+
+engine = pyttsx3.init()
+engine.setProperty('rate', 150)     # setting up new voice rate
+engine.setProperty('volume',1)    # setting up volume level  between 0 and 1
+engine.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female
+
+
+mydb = mysql.connector.connect(user="default@c300",
+                                   password="@Republic1",
+                                   database='integration',
+                                   host="c300.mysql.database.azure.com",
+                                   ssl_ca='./Downloads/BaltimoreCyberTrustRoot.crt.pem')
+
+
+mycursor=mydb.cursor()
+
+mycursor.execute("select fullname from integration.user")
+staff = mycursor.fetchall()
+
+mycursor.execute("select fullname from guest")
+guest= mycursor.fetchall()
+for i in guest:
+    print(i)
 
 Encodings=[]
 Names=[]
 databasename=[]
+detected=[]
 with open('train.pkl', 'rb') as f:
     Names=pickle.load(f)
     Encodings=pickle.load(f)
@@ -27,8 +53,10 @@ while True:
         if True in matches:
             first_match_index=matches.index(True)
             name=Names[first_match_index]
-            if(name in databasename):
-                print("Hi",name)
+            if(name in staff or guest) and (name not in detected):
+                engine.say("Hello",name,"please proceed to level 1")
+                engine.runAndWait()
+                engine.stop()
             
         cv2.rectangle(frame,(left,top), (right,bottom),(0,0,255),2)
         cv2.putText(frame,name,(left,bottom+30), font,.75,(0,0,255),2)
