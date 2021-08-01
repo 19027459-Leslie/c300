@@ -8,14 +8,16 @@ import pyttsx3
 engine = pyttsx3.init()
 engine.setProperty('rate', 150)     # setting up new voice rate
 engine.setProperty('volume',1)    # setting up volume level  between 0 and 1
-engine.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female
+voices= engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)   #changing index, changes voices. 1 for female 0 for male
 
 
 mydb = mysql.connector.connect(user="default@c300",
                                    password="@Republic1",
                                    database='integration',
                                    host="c300.mysql.database.azure.com",
-                                   ssl_ca='./Downloads/BaltimoreCyberTrustRoot.crt.pem')
+                                   ssl_ca='./BaltimoreCyberTrustRoot.crt.pem')
+
 
 
 mycursor=mydb.cursor()
@@ -25,8 +27,6 @@ staff = mycursor.fetchall()
 
 mycursor.execute("select fullname from guest")
 guest= mycursor.fetchall()
-for i in guest:
-    print(i)
 
 Encodings=[]
 Names=[]
@@ -54,7 +54,9 @@ while True:
             first_match_index=matches.index(True)
             name=Names[first_match_index]
             if(name in staff or guest) and (name not in detected):
-                engine.say("Hello",name,"please proceed to level 1")
+                detected.append(name)
+                strin="Hello "+name+" please proceed to level 1"
+                engine.say(strin)                
                 engine.runAndWait()
                 engine.stop()
             
